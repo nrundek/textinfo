@@ -1,0 +1,70 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: textstatistic 1.0\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 3.7\n"
+
+msgid "Unable to fetch text"
+msgstr "Nije moguće dohvatiti tekst"
+
+msgid "Cards: {cards:.1f}. {missing} characters to the next card"
+msgstr "Kartice: {cards:.1f}. {missing} znakova do sljedeće kartice"
+
+msgid "Words: {words}"
+msgstr "Riječi: {words}"
+
+msgid "Characters with spaces: {chars}"
+msgstr "Znakova s razmacima: {chars}"
+
+msgid "Characters without spaces: {chars}"
+msgstr "Znakova bez razmaka: {chars}"
+
+msgid "Unable to determine column"
+msgstr "Nije moguće odrediti kolonu"
+
+msgid "Column {col} of {total}"
+msgstr "Kolona {col} od {total}"
+
+msgid "Written lines: {lines}"
+msgstr "Napisanih redaka: {lines}"
+
+msgid "Empty lines: {lines}"
+msgstr "Praznih redaka: {lines}"
+
+msgid "Estimated total pages: 0 (by {cpp} chars/page)"
+msgstr "Ukupno procijenjeno stranica: 0 (po {cpp} znakova na stranici)"
+
+msgid "Estimated total pages: {pages} (by {cpp} chars/page)"
+msgstr "Ukupno procijenjeno stranica: {pages} (po {cpp} znakova na stranici)"
+
+msgid "Alt+1: Reports 'text cards' (1 card = 1800 characters including spaces) and characters missing to the next full card."
+msgstr "Alt+1: Ispisuje 'tekstualne kartice' (1 kartica = 1800 znakova uključujući razmake) i broj znakova koji nedostaje do sljedeće pune kartice."
+
+msgid "Alt+2: Reports the total number of characters (including spaces)."
+msgstr "Alt+2: Ispisuje ukupan broj znakova (uključujući razmake)."
+
+msgid "Alt+3: Reports the total number of characters (excluding whitespace)."
+msgstr "Alt+3: Ispisuje ukupan broj znakova (bez razmaka)."
+
+msgid "Alt+4: Reports the number of words in the document."
+msgstr "Alt+4: Ispisuje broj riječi u dokumentu."
+
+msgid "Alt+5: Reports the caret column relative to the total number of columns in the current line (e.g., 'Column 12 of 80')."
+msgstr "Alt+5: Ispisuje kolonu kursora u odnosu na ukupan broj kolona u trenutnom retku (npr. 'Kolona 12 od 80')."
+
+msgid "Alt+6: Reports the number of written (non-empty) lines."
+msgstr "Alt+6: Ispisuje broj napisanih (nepraznih) redaka."
+
+msgid "Alt+7: Reports the number of empty (blank/whitespace-only) lines."
+msgstr "Alt+7: Ispisuje broj praznih redaka (samo prazni ili s razmacima)."
+
+msgid "Alt+8: Reports estimated total pages by 1800 chars/page."
+msgstr "Alt+8: Ispisuje procijenjeni ukupan broj stranica po 1800 znakova/stranici."
