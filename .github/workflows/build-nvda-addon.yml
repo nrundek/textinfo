@@ -1,0 +1,71 @@
+name: Build NVDA add-on (.nvda-addon)
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_dir:
+        description: 'Folder that contains manifest.ini (usually textinfo)'
+        type: string
+        default: 'textinfo'
+      artifact_name:
+        description: 'Artifact name (optional)'
+        type: string
+        default: ''
+  repository_dispatch:
+    types: [build-nvda-addon]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Determine target folder (dispatch vs. manual)
+        id: target
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "repository_dispatch" ]]; then
+            TARGET_DIR="${{ github.event.client_payload.target_dir }}"
+          else
+            TARGET_DIR="${{ inputs.target_dir }}"
+          fi
+          if [[ -z "$TARGET_DIR" ]]; then
+            echo "TARGET_DIR must be provided (contains manifest.ini)"; exit 1
+          fi
+          echo "target_dir=$TARGET_DIR" >> "$GITHUB_OUTPUT"
+          echo "Using target_dir=$TARGET_DIR"
+
+      - name: Read manifest.ini and extract name+version
+        id: meta
+        shell: bash
+        run: |
+          MANIFEST_PATH="${{ steps.target.outputs.target_dir }}/manifest.ini"
+          if [[ ! -f "$MANIFEST_PATH" ]]; then
+            echo "manifest.ini not found at $MANIFEST_PATH"; exit 1
+          fi
+          ADDON_NAME=$(grep -iE '^\s*name\s*=' "$MANIFEST_PATH" | head -n1 | sed -E 's/^\s*name\s*=\s*//i' | tr -d '\r')
+          ADDON_VERSION=$(grep -iE '^\s*version\s*=' "$MANIFEST_PATH" | head -n1 | sed -E 's/^\s*version\s*=\s*//i' | tr -d '\r')
+          if [[ -z "$ADDON_NAME" ]]; then ADDON_NAME="addon"; fi
+          if [[ -z "$ADDON_VERSION" ]]; then ADDON_VERSION="0.0"; fi
+          # Normalize
+          ADDON_NAME="${ADDON_NAME,,}"
+          FILENAME="${ADDON_NAME}-${ADDON_VERSION}.nvda-addon"
+          echo "addon_name=$ADDON_NAME" >> "$GITHUB_OUTPUT"
+          echo "addon_version=$ADDON_VERSION" >> "$GITHUB_OUTPUT"
+          echo "filename=$FILENAME" >> "$GITHUB_OUTPUT"
+          echo "Resolved: $FILENAME"
+
+      - name: Pack .nvda-addon
+        shell: bash
+        run: |
+          mkdir -p dist
+          # Create add-on from the target folder (exclude VCS and workflows)
+          (cd "${{ steps.target.outputs.target_dir }}" &&             zip -r "../dist/${{ steps.meta.outputs.filename }}" .             -x ".git/*" -x ".github/*" -x "dist/*" )
+          ls -l dist
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name || steps.meta.outputs.filename }}
+          path: dist/${{ steps.meta.outputs.filename }}
