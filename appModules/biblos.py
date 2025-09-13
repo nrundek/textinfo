@@ -1,4 +1,8 @@
+
 # -*- coding: UTF-8 -*-
+# NVDA appModule providing TextInfo-like commands for this application.
+# This file is auto-generated.
+
 import math
 import time
 
@@ -8,7 +12,7 @@ addonHandler.initTranslation()
 import api
 import ui
 from logHandler import log
-import globalPluginHandler
+import appModuleHandler
 import textInfos
 from keyboardHandler import KeyboardInputGesture
 
@@ -22,10 +26,9 @@ except Exception:
         pass
 
 CARD_SIZE = 1800
-EST_CHARS_PER_PAGE = 1800
+EST_CHARS_PER_PAGE = 4500 
 
-
-class GlobalPlugin(globalPluginHandler.GlobalPlugin):
+class AppModule(appModuleHandler.AppModule):
     __gestures = {
         "kb:alt+1": "reportCardsOnly",
         "kb(laptop):alt+1": "reportCardsOnly",
@@ -326,40 +329,27 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 pass
             return None
 
-
     def _get_line_and_caret_column_walk(self):
-        """
-        Line-walk fallback that counts characters by walking TextInfo one char at a time.
-        Does not rely on line text being available.
-        Returns (caretCol, totalCols) or None.
-        """
         try:
             obj = api.getFocusObject()
             caretTi = obj.makeTextInfo(textInfos.POSITION_CARET)
 
-            # 1) Walk left to find start-of-line and count left length
             cur = caretTi.copy()
             leftLen = 0
-            atStart = False
             while True:
                 prev = cur.copy()
                 if not prev.move(textInfos.UNIT_CHARACTER, -1):
-                    # reached start of document
-                    atStart = True
                     break
                 chTi = prev.copy()
                 chTi.expand(textInfos.UNIT_CHARACTER)
                 ch = chTi.text or ""
                 if ch in ("\r", "\n"):
-                    # start of line is right after this newline
                     break
                 leftLen += 1
                 cur = prev
 
-            # cur is now at start-of-line position (either true doc start or just after newline)
             lineStartTi = cur.copy()
 
-            # 2) From start-of-line, walk right to count total columns until newline or doc end
             totalCols = 0
             scan = lineStartTi.copy()
             while True:
@@ -367,18 +357,15 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 chTi2.expand(textInfos.UNIT_CHARACTER)
                 ch2 = chTi2.text or ""
                 if not ch2:
-                    # Try to move; if can't, we're at end of doc/line with no chars
                     moved = scan.move(textInfos.UNIT_CHARACTER, 1)
                     if not moved:
                         break
-                    # After moving, expand again
                     chTi2 = scan.copy()
                     chTi2.expand(textInfos.UNIT_CHARACTER)
                     ch2 = chTi2.text or ""
                 if ch2 in ("\r", "\n"):
                     break
                 if ch2 == "":
-                    # no character text; try moving one and continue
                     if not scan.move(textInfos.UNIT_CHARACTER, 1):
                         break
                     continue
@@ -404,11 +391,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 if kbCols:
                     return kbCols
             return cols
-        # Try walk method next
         walkCols = self._get_line_and_caret_column_walk()
         if walkCols:
             return walkCols
-        # Then keyboard, then document clipboard
         cols = self._get_line_and_caret_column_keyboard()
         if cols:
             return cols
@@ -488,11 +473,11 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 pages=pages, cpp=EST_CHARS_PER_PAGE))
 
 # Input help strings
-GlobalPlugin.script_reportCardsOnly.__doc__ = _("Alt+1: Reports 'text cards' (1 card = 1800 characters including spaces) and characters missing to the next full card.")
-GlobalPlugin.script_reportCharCountWithSpaces.__doc__ = _("Alt+2: Reports the total number of characters (including spaces).")
-GlobalPlugin.script_reportCharCountNoSpaces.__doc__ = _("Alt+3: Reports the total number of characters (excluding whitespace).")
-GlobalPlugin.script_reportWordCount.__doc__ = _("Alt+4: Reports the number of words in the document.")
-GlobalPlugin.script_reportCaretColumnRelative.__doc__ = _("Alt+5: Reports the caret column relative to the total number of columns in the current line (e.g., 'Column 12 of 80').")
-GlobalPlugin.script_reportWrittenLineCount.__doc__ = _("Alt+6: Reports the number of written (non-empty) lines.")
-GlobalPlugin.script_reportEmptyLineCount.__doc__ = _("Alt+7: Reports the number of empty (blank/whitespace-only) lines.")
-GlobalPlugin.script_reportEstimatedPages.__doc__ = _("Alt+8: Reports estimated total pages by 1800 chars/page.")
+AppModule.script_reportCardsOnly.__doc__ = _("Alt+1: Reports 'text cards' (1 card = 1800 characters including spaces) and characters missing to the next full card.")
+AppModule.script_reportCharCountWithSpaces.__doc__ = _("Alt+2: Reports the total number of characters (including spaces).")
+AppModule.script_reportCharCountNoSpaces.__doc__ = _("Alt+3: Reports the total number of characters (excluding whitespace).")
+AppModule.script_reportWordCount.__doc__ = _("Alt+4: Reports the number of words in the document.")
+AppModule.script_reportCaretColumnRelative.__doc__ = _("Alt+5: Reports the caret column relative to the total number of columns in the current line (e.g., 'Column 12 of 80').")
+AppModule.script_reportWrittenLineCount.__doc__ = _("Alt+6: Reports the number of written (non-empty) lines.")
+AppModule.script_reportEmptyLineCount.__doc__ = _("Alt+7: Reports the number of empty (blank/whitespace-only) lines.")
+AppModule.script_reportEstimatedPages.__doc__ = _("Alt+8: Reports estimated total pages by 4500 chars/page.")
